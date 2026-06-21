@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Predicción de demanda de bicicletas compartidas</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 20px; }
+        h1 { color: #2c3e50; }
+        label { display: block; margin-top: 12px; font-weight: bold; }
+        input, select { width: 100%; padding: 6px; margin-top: 4px; box-sizing: border-box; }
+        button { margin-top: 20px; padding: 10px 20px; background-color: #2980b9; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #1f6391; }
+        .resultado { margin-top: 20px; padding: 15px; background-color: #eafaf1; border: 1px solid #2ecc71; border-radius: 4px; }
+        .error { margin-top: 20px; padding: 15px; background-color: #fdecea; border: 1px solid #e74c3c; border-radius: 4px; color: #c0392b; }
+        .instrucciones { background-color: #f4f6f7; padding: 12px; border-radius: 4px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Predicción de demanda de bicicletas compartidas</h1>
+    <p class="instrucciones">
+        Este modelo predice el <strong>número de bicicletas que serán rentadas en una hora específica</strong>,
+        a partir de la fecha, hora y condiciones climáticas. Ingresa los valores reales solicitados
+        (no es necesario hacer ningún cálculo ni conversión, la aplicación se encarga de eso internamente).
+    </p>
+
+    <form method="POST">
+        <label for="anio">Año:</label>
+        <select name="anio" id="anio" required>
+            <option value="2011">2011</option>
+            <option value="2012">2012</option>
+        </select>
+
+        <label for="mes">Mes (1-12):</label>
+        <input type="number" name="mes" id="mes" min="1" max="12" required>
+
+        <label for="hora">Hora del día (0-23):</label>
+        <input type="number" name="hora" id="hora" min="0" max="23" required>
+
+        <label for="dia_semana">Día de la semana:</label>
+        <select name="dia_semana" id="dia_semana" required>
+            <option value="0">Domingo</option>
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miércoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sábado</option>
+        </select>
+
+        <label for="es_festivo">¿Es día festivo?</label>
+        <select name="es_festivo" id="es_festivo" required>
+            <option value="0">No</option>
+            <option value="1">Sí</option>
+        </select>
+
+        <label for="es_laboral">¿Es día laboral?</label>
+        <select name="es_laboral" id="es_laboral" required>
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+        </select>
+
+        <label for="estacion">Estación del año:</label>
+        <select name="estacion" id="estacion" required>
+            <option value="1">Primavera</option>
+            <option value="2">Verano</option>
+            <option value="3">Otoño</option>
+            <option value="4">Invierno</option>
+        </select>
+
+        <label for="clima">Condición climática:</label>
+        <select name="clima" id="clima" required>
+            <option value="1">Despejado</option>
+            <option value="2">Nublado / niebla</option>
+            <option value="3">Lluvia o nieve ligera</option>
+            <option value="4">Lluvia o nieve fuerte</option>
+        </select>
+
+        <label for="temperatura">Temperatura (°C):</label>
+        <input type="number" step="0.1" name="temperatura" id="temperatura" required>
+
+        <label for="sensacion_termica">Sensación térmica (°C):</label>
+        <input type="number" step="0.1" name="sensacion_termica" id="sensacion_termica" required>
+
+        <label for="humedad">Humedad relativa (%):</label>
+        <input type="number" step="0.1" name="humedad" id="humedad" min="0" max="100" required>
+
+        <label for="viento">Velocidad del viento (km/h):</label>
+        <input type="number" step="0.1" name="viento" id="viento" min="0" required>
+
+        <button type="submit">Generar predicción</button>
+    </form>
+
+    {% if resultado is not none %}
+    <div class="resultado">
+        <strong>Predicción:</strong> se estiman aproximadamente <strong>{{ resultado }}</strong> bicicletas rentadas en esa hora.
+    </div>
+    {% endif %}
+
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+</body>
+</html>
