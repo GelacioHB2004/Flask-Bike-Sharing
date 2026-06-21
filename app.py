@@ -89,7 +89,7 @@ def index():
         except Exception as e:
             error = f"Ocurrió un error al procesar la predicción: {e}"
 
-    return render_template("index.html", resultado=resultado, error=error)
+    return render_template("FormularioBikeSharing.html", resultado=resultado, error=error)
 
 
 if __name__ == "__main__":
