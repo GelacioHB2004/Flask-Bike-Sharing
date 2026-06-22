@@ -82,7 +82,7 @@ def index():
             }])
 
             prediccion = pipeline.predict(datos)[0]
-            resultado = round(prediccion)
+            resultado = max(0, round(prediccion))  # nunca puede haber una demanda negativa de bicicletas
 
         except (ValueError, KeyError) as e:
             error = f"Datos inválidos: {e}"
