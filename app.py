@@ -34,6 +34,8 @@ def normalizar_windspeed(windspeed_real):
 def index():
     resultado = None
     error = None
+    valor_real = None
+    diferencia = None
 
     if request.method == "POST":
         try:
@@ -50,6 +52,9 @@ def index():
             atemp_real = float(request.form["sensacion_termica"])
             hum_real = float(request.form["humedad"])
             wind_real = float(request.form["viento"])
+
+            # Valor real de cnt, solo presente si se cargó un ejemplo del dataset
+            cnt_real_str = request.form.get("cnt_real", "")
 
             # Validación de rangos razonables
             if not (1 <= mes <= 12):
@@ -84,12 +89,23 @@ def index():
             prediccion = pipeline.predict(datos)[0]
             resultado = max(0, round(prediccion))  # nunca puede haber una demanda negativa de bicicletas
 
+            # Si se usó un ejemplo del dataset, calculo la comparación contra el valor real
+            if cnt_real_str.strip() != "":
+                valor_real = int(cnt_real_str)
+                diferencia = abs(valor_real - resultado)
+
         except (ValueError, KeyError) as e:
             error = f"Datos inválidos: {e}"
         except Exception as e:
             error = f"Ocurrió un error al procesar la predicción: {e}"
 
-    return render_template("FormularioBikeSharing.html", resultado=resultado, error=error)
+    return render_template(
+        "FormularioBikeSharing.html",
+        resultado=resultado,
+        error=error,
+        valor_real=valor_real,
+        diferencia=diferencia
+    )
 
 
 if __name__ == "__main__":

@@ -53,9 +53,11 @@
         </div>
 
         <form method="POST">
+            <input type="hidden" id="cnt_real" name="cnt_real" value="">
+
             <div class="form-grid">
                 <div class="form-group">
-                    <label for="anio">Año</label>
+                    <label for="anio">Año (yr)</label>
                     <select name="anio" id="anio" required>
                         <option value="2011">2011</option>
                         <option value="2012">2012</option>
@@ -63,17 +65,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="mes">Mes (1-12)</label>
+                    <label for="mes">Mes 1-12 (mnth)</label>
                     <input type="number" name="mes" id="mes" min="1" max="12" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="hora">Hora (0-23)</label>
+                    <label for="hora">Hora 0-23 (hr)</label>
                     <input type="number" name="hora" id="hora" min="0" max="23" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="dia_semana">Día de la semana</label>
+                    <label for="dia_semana">Día de la semana (weekday)</label>
                     <select name="dia_semana" id="dia_semana" required>
                         <option value="0">Domingo</option>
                         <option value="1">Lunes</option>
@@ -86,7 +88,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="es_festivo">¿Día festivo?</label>
+                    <label for="es_festivo">¿Día festivo? (holiday)</label>
                     <select name="es_festivo" id="es_festivo" required>
                         <option value="0">No</option>
                         <option value="1">Sí</option>
@@ -94,7 +96,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="es_laboral">¿Día laboral?</label>
+                    <label for="es_laboral">¿Día laboral? (workingday)</label>
                     <select name="es_laboral" id="es_laboral" required>
                         <option value="1">Sí</option>
                         <option value="0">No</option>
@@ -102,7 +104,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="estacion">Estación</label>
+                    <label for="estacion">Estación (season)</label>
                     <select name="estacion" id="estacion" required>
                         <option value="1">Primavera</option>
                         <option value="2">Verano</option>
@@ -112,7 +114,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="clima">Clima</label>
+                    <label for="clima">Clima (weathersit)</label>
                     <select name="clima" id="clima" required>
                         <option value="1">Despejado</option>
                         <option value="2">Nublado / niebla</option>
@@ -122,22 +124,22 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="temperatura">Temp. (°C)</label>
+                    <label for="temperatura">Temp. °C (temp)</label>
                     <input type="number" step="any" name="temperatura" id="temperatura" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="sensacion_termica">Sens. Térmica (°C)</label>
+                    <label for="sensacion_termica">Sens. Térmica °C (atemp)</label>
                     <input type="number" step="any" name="sensacion_termica" id="sensacion_termica" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="humedad">Humedad (%)</label>
+                    <label for="humedad">Humedad % (hum)</label>
                     <input type="number" step="any" name="humedad" id="humedad" min="0" max="100" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="viento">Viento (km/h)</label>
+                    <label for="viento">Viento km/h (windspeed)</label>
                     <input type="number" step="any" name="viento" id="viento" min="0" required>
                 </div>
             </div>
@@ -150,6 +152,14 @@
             <strong>Resultado Estimado:</strong>
             <span class="valor-prediccion">{{ resultado }}</span>
             <span>bicicletas rentadas en esa hora.</span>
+
+            {% if valor_real is not none %}
+            <hr style="margin: 12px 0; border-color: #2ecc71;">
+            <div>
+                <strong>Valor real (cnt):</strong> {{ valor_real }} bicicletas.<br>
+                <strong>Diferencia absoluta:</strong> {{ diferencia }} bicicletas.
+            </div>
+            {% endif %}
         </div>
         {% endif %}
 
@@ -160,36 +170,36 @@
 
     <script>
         const ejemplos = [
-            { anio: "2011", mes: 6, hora: 22, dia: "0", festivo: "0", laboral: "0", estacion: "2", clima: "1", temp: 22.08, atemp: 23.0, hum: 78.0, viento: 15.0 },
-            { anio: "2011", mes: 2, hora: 14, dia: "0", festivo: "0", laboral: "0", estacion: "1", clima: "1", temp: 7.98, atemp: 7.0, hum: 46.0, viento: 6.0 },
-            { anio: "2012", mes: 1, hora: 9, dia: "1", festivo: "1", laboral: "0", estacion: "1", clima: "1", temp: -3.3, atemp: -8.0, hum: 58.0, viento: 11.0 },
-            { anio: "2011", mes: 12, hora: 0, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 15.5, atemp: 16.0, hum: 77.0, viento: 20.0 },
-            { anio: "2011", mes: 11, hora: 9, dia: "0", festivo: "0", laboral: "0", estacion: "4", clima: "2", temp: 6.1, atemp: 5.0, hum: 75.0, viento: 6.0 },
-            { anio: "2011", mes: 7, hora: 10, dia: "4", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 24.9, atemp: 26.0, hum: 42.0, viento: 17.0 },
-            { anio: "2011", mes: 5, hora: 20, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 23.02, atemp: 25.0, hum: 74.0, viento: 6.0 },
-            { anio: "2011", mes: 5, hora: 14, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "2", temp: 24.9, atemp: 27.0, hum: 58.0, viento: 35.0 },
-            { anio: "2012", mes: 8, hora: 6, dia: "6", festivo: "0", laboral: "0", estacion: "3", clima: "1", temp: 24.9, atemp: 28.0, hum: 84.0, viento: 15.0 },
-            { anio: "2011", mes: 2, hora: 3, dia: "3", festivo: "0", laboral: "1", estacion: "1", clima: "2", temp: 1.4, atemp: -3.0, hum: 47.0, viento: 13.0 },
-            { anio: "2011", mes: 2, hora: 8, dia: "0", festivo: "0", laboral: "0", estacion: "1", clima: "2", temp: 2.34, atemp: -1.0, hum: 64.0, viento: 13.0 },
-            { anio: "2011", mes: 5, hora: 20, dia: "4", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 20.2, atemp: 24.0, hum: 64.0, viento: 13.0 },
-            { anio: "2011", mes: 10, hora: 3, dia: "1", festivo: "0", laboral: "1", estacion: "4", clima: "1", temp: 3.28, atemp: 1.0, hum: 87.0, viento: 7.0 },
-            { anio: "2011", mes: 11, hora: 6, dia: "6", festivo: "0", laboral: "0", estacion: "4", clima: "1", temp: 3.28, atemp: -2.0, hum: 60.0, viento: 22.0 },
-            { anio: "2012", mes: 11, hora: 17, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 6.1, atemp: 2.0, hum: 75.0, viento: 26.0 },
-            { anio: "2011", mes: 2, hora: 16, dia: "2", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: 2.34, atemp: -4.0, hum: 35.0, viento: 35.0 },
-            { anio: "2011", mes: 10, hora: 1, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 10.8, atemp: 11.0, hum: 87.0, viento: 7.0 },
-            { anio: "2012", mes: 7, hora: 23, dia: "2", festivo: "0", laboral: "1", estacion: "3", clima: "2", temp: 23.02, atemp: 24.0, hum: 83.0, viento: 11.0 },
-            { anio: "2011", mes: 11, hora: 14, dia: "3", festivo: "0", laboral: "1", estacion: "4", clima: "1", temp: 15.5, atemp: 16.0, hum: 45.0, viento: 11.0 },
-            { anio: "2012", mes: 9, hora: 12, dia: "1", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 22.08, atemp: 25.0, hum: 44.0, viento: 26.0 },
-            { anio: "2012", mes: 1, hora: 17, dia: "5", festivo: "0", laboral: "1", estacion: "1", clima: "2", temp: 2.34, atemp: 1.0, hum: 32.0, viento: 6.0 },
-            { anio: "2011", mes: 1, hora: 3, dia: "1", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: -2.36, atemp: -8.0, hum: 50.0, viento: 15.0 },
-            { anio: "2011", mes: 8, hora: 21, dia: "3", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 27.72, atemp: 28.0, hum: 33.0, viento: 7.0 },
-            { anio: "2012", mes: 8, hora: 5, dia: "0", festivo: "0", laboral: "0", estacion: "3", clima: "1", temp: 25.84, atemp: 30.0, hum: 74.0, viento: 17.0 },
-            { anio: "2012", mes: 4, hora: 18, dia: "6", festivo: "0", laboral: "0", estacion: "2", clima: "2", temp: 21.14, atemp: 25.0, hum: 35.0, viento: 15.0 },
-            { anio: "2012", mes: 1, hora: 7, dia: "5", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: 2.34, atemp: -2.0, hum: 69.0, viento: 15.0 },
-            { anio: "2011", mes: 8, hora: 4, dia: "5", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 22.08, atemp: 23.0, hum: 78.0, viento: 9.0 },
-            { anio: "2011", mes: 10, hora: 14, dia: "3", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 16.44, atemp: 17.0, hum: 77.0, viento: 0.0 },
-            { anio: "2012", mes: 4, hora: 17, dia: "1", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 17.38, atemp: 18.0, hum: 32.0, viento: 28.0 },
-            { anio: "2011", mes: 5, hora: 11, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 26.78, atemp: 28.0, hum: 51.0, viento: 15.0 }
+            { anio: "2011", mes: 6, hora: 22, dia: "0", festivo: "0", laboral: "0", estacion: "2", clima: "1", temp: 22.08, atemp: 23.0, hum: 78.0, viento: 15.0, cnt: 130 },
+            { anio: "2011", mes: 2, hora: 14, dia: "0", festivo: "0", laboral: "0", estacion: "1", clima: "1", temp: 7.98, atemp: 7.0, hum: 46.0, viento: 6.0, cnt: 161 },
+            { anio: "2012", mes: 1, hora: 9, dia: "1", festivo: "1", laboral: "0", estacion: "1", clima: "1", temp: -3.3, atemp: -8.0, hum: 58.0, viento: 11.0, cnt: 96 },
+            { anio: "2011", mes: 12, hora: 0, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 15.5, atemp: 16.0, hum: 77.0, viento: 20.0, cnt: 28 },
+            { anio: "2011", mes: 11, hora: 9, dia: "0", festivo: "0", laboral: "0", estacion: "4", clima: "2", temp: 6.1, atemp: 5.0, hum: 75.0, viento: 6.0, cnt: 170 },
+            { anio: "2011", mes: 7, hora: 10, dia: "4", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 24.9, atemp: 26.0, hum: 42.0, viento: 17.0, cnt: 127 },
+            { anio: "2011", mes: 5, hora: 20, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 23.02, atemp: 25.0, hum: 74.0, viento: 6.0, cnt: 280 },
+            { anio: "2011", mes: 5, hora: 14, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "2", temp: 24.9, atemp: 27.0, hum: 58.0, viento: 35.0, cnt: 158 },
+            { anio: "2012", mes: 8, hora: 6, dia: "6", festivo: "0", laboral: "0", estacion: "3", clima: "1", temp: 24.9, atemp: 28.0, hum: 84.0, viento: 15.0, cnt: 49 },
+            { anio: "2011", mes: 2, hora: 3, dia: "3", festivo: "0", laboral: "1", estacion: "1", clima: "2", temp: 1.4, atemp: -3.0, hum: 47.0, viento: 13.0, cnt: 1 },
+            { anio: "2011", mes: 2, hora: 8, dia: "0", festivo: "0", laboral: "0", estacion: "1", clima: "2", temp: 2.34, atemp: -1.0, hum: 64.0, viento: 13.0, cnt: 12 },
+            { anio: "2011", mes: 5, hora: 20, dia: "4", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 20.2, atemp: 24.0, hum: 64.0, viento: 13.0, cnt: 276 },
+            { anio: "2011", mes: 10, hora: 3, dia: "1", festivo: "0", laboral: "1", estacion: "4", clima: "1", temp: 3.28, atemp: 1.0, hum: 87.0, viento: 7.0, cnt: 3 },
+            { anio: "2011", mes: 11, hora: 6, dia: "6", festivo: "0", laboral: "0", estacion: "4", clima: "1", temp: 3.28, atemp: -2.0, hum: 60.0, viento: 22.0, cnt: 12 },
+            { anio: "2012", mes: 11, hora: 17, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 6.1, atemp: 2.0, hum: 75.0, viento: 26.0, cnt: 527 },
+            { anio: "2011", mes: 2, hora: 16, dia: "2", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: 2.34, atemp: -4.0, hum: 35.0, viento: 35.0, cnt: 83 },
+            { anio: "2011", mes: 10, hora: 1, dia: "2", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 10.8, atemp: 11.0, hum: 87.0, viento: 7.0, cnt: 9 },
+            { anio: "2012", mes: 7, hora: 23, dia: "2", festivo: "0", laboral: "1", estacion: "3", clima: "2", temp: 23.02, atemp: 24.0, hum: 83.0, viento: 11.0, cnt: 147 },
+            { anio: "2011", mes: 11, hora: 14, dia: "3", festivo: "0", laboral: "1", estacion: "4", clima: "1", temp: 15.5, atemp: 16.0, hum: 45.0, viento: 11.0, cnt: 172 },
+            { anio: "2012", mes: 9, hora: 12, dia: "1", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 22.08, atemp: 25.0, hum: 44.0, viento: 26.0, cnt: 332 },
+            { anio: "2012", mes: 1, hora: 17, dia: "5", festivo: "0", laboral: "1", estacion: "1", clima: "2", temp: 2.34, atemp: 1.0, hum: 32.0, viento: 6.0, cnt: 349 },
+            { anio: "2011", mes: 1, hora: 3, dia: "1", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: -2.36, atemp: -8.0, hum: 50.0, viento: 15.0, cnt: 1 },
+            { anio: "2011", mes: 8, hora: 21, dia: "3", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 27.72, atemp: 28.0, hum: 33.0, viento: 7.0, cnt: 209 },
+            { anio: "2012", mes: 8, hora: 5, dia: "0", festivo: "0", laboral: "0", estacion: "3", clima: "1", temp: 25.84, atemp: 30.0, hum: 74.0, viento: 17.0, cnt: 19 },
+            { anio: "2012", mes: 4, hora: 18, dia: "6", festivo: "0", laboral: "0", estacion: "2", clima: "2", temp: 21.14, atemp: 25.0, hum: 35.0, viento: 15.0, cnt: 481 },
+            { anio: "2012", mes: 1, hora: 7, dia: "5", festivo: "0", laboral: "1", estacion: "1", clima: "1", temp: 2.34, atemp: -2.0, hum: 69.0, viento: 15.0, cnt: 185 },
+            { anio: "2011", mes: 8, hora: 4, dia: "5", festivo: "0", laboral: "1", estacion: "3", clima: "1", temp: 22.08, atemp: 23.0, hum: 78.0, viento: 9.0, cnt: 7 },
+            { anio: "2011", mes: 10, hora: 14, dia: "3", festivo: "0", laboral: "1", estacion: "4", clima: "2", temp: 16.44, atemp: 17.0, hum: 77.0, viento: 0.0, cnt: 66 },
+            { anio: "2012", mes: 4, hora: 17, dia: "1", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 17.38, atemp: 18.0, hum: 32.0, viento: 28.0, cnt: 632 },
+            { anio: "2011", mes: 5, hora: 11, dia: "2", festivo: "0", laboral: "1", estacion: "2", clima: "1", temp: 26.78, atemp: 28.0, hum: 51.0, viento: 15.0, cnt: 175 }
         ];
 
         function cargarEjemplo(indice) {
@@ -208,6 +218,7 @@
             document.getElementById("sensacion_termica").value = e.atemp;
             document.getElementById("humedad").value = e.hum;
             document.getElementById("viento").value = e.viento;
+            document.getElementById("cnt_real").value = e.cnt;
         }
     </script>
 </body>
